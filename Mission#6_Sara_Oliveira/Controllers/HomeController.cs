@@ -14,32 +14,103 @@ namespace Mission_6_Sara_Oliveira.Controllers
             _context = tempdata;
         }
 
-        public IActionResult Index()
+        public IActionResult Index()//gets index
+        {
+            return View();//renders index
+        }
+        [HttpGet]
+        public IActionResult Getjoel()//this is for the joel view
         {
             return View();
         }
         [HttpGet]
-        public IActionResult Getjoel()
+        public IActionResult Film()//gets the form to submit a moview
         {
-            return View();
+           ViewBag.Categories= _context.Categories
+                .OrderBy(x => x.Category)
+                .ToList();
+            
+            return View("Film", new Movies());
         }
-        [HttpGet]
-        public IActionResult Film()
-        {
-           return View();
-        }
+
+        
         [HttpPost]
-        public IActionResult Film(Application response)
+        public IActionResult Film(Movies response)
         
         {
-            _context.Applications.Add(response);//adding record to database
-            _context.SaveChanges();
-            return View("Confirmation");
+            if (ModelState.IsValid)
+            {
+                _context.Movies.Add(response);//adding record to database
+                _context.SaveChanges();
+                return View("Confirmation");
+            }
+            else//Invalid
+            {
+                ViewBag.Categories = _context.Categories
+                .OrderBy(x => x.Category)
+                .ToList();
+                return View(response);
+            }
         }  
         
-        public IActionResult Error()
+       
+
+        public IActionResult MoviesList()//displays database
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+           var movies= _context.Movies.ToList();
+
+            return View(movies);
+ 
+
         }
+
+        [HttpGet]
+        public IActionResult Edit(int id)//gets the id of the record im editing and returns it to be edited
+
+        {
+            var recordToEdit = _context.Movies
+                .Single(x => x.MovieId == id);
+
+            ViewBag.Categories = _context.Categories
+                .OrderBy(x => x.Category)
+                .ToList();
+            return View("Film", recordToEdit);
+        }
+
+        [HttpPost]
+
+        public IActionResult Edit(Movies updatedInfo)//updates the record
+        {
+            _context.Update(updatedInfo);
+            _context.SaveChanges();
+
+            return RedirectToAction  ("MoviesList");
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int id)//gets the id of the record im editing and returns it to be deleteed
+        {
+
+            var recordToDelete = _context.Movies
+                .Single(x =>   x.MovieId == id);
+
+            //ViewBag.Categories = _context.Categories
+            //    .OrderBy(x => x.Category)
+            //    .ToList();
+            return View("Delete", recordToDelete);
+
+
+        }
+        [HttpPost]
+        public IActionResult Delete(Movies movie)//actually deeletes record
+        {
+            _context.Movies.Remove(movie);
+            _context.SaveChanges();
+
+            return RedirectToAction("MoviesList");
+
+        }
+
+
     }
 }

@@ -2,15 +2,23 @@
 
 
 
-@model Application
+@model Movies
 
 <h1> Thank You For Collaborating</h1>
 <form method="post">
-<label asp-for="Category">Category: </label>
-<input asp-for="Category"/>
+
+<input type="hidden" asp-for="MovieId">
+<label asp-for="CategoryId">Category: </label>
+<select asp-for="CategoryId">
+    <option value="">Select a Major</option>
+    @foreach (var category in ViewBag.Categories)
+    {
+        <option value="@category.CategoryId">@category.Category</option>
+    }
+</select> 
 <br />
-<label asp-for="Tittle">Tittle: </label>
-<input asp-for="Tittle" />
+<label asp-for="Title">Title: </label>
+<input asp-for="Title" />
 <br />
 <label asp-for="Year">Year: </label>
 <input asp-for="Year"/>
@@ -33,15 +41,28 @@
 <br />
 </select>
 <br />
-<label asp-for="Lent_To">Lent To: </label>
-<input asp-for="Lent_To"/>
-<br />
-</select>
-<br />
-<label asp-for="Notes">Notes: </label>
-<input asp-for="Notes"/>
- [range(0,130)]
+<label asp-for="LentTo">Lent To: </label>
+<input asp-for="LentTo"/>
 <br />
 
+<br />
+<label asp-for="CopiedToPlex">CopiedToPlex: </label>
+<select asp-for="CopiedToPlex"/>
+    <option value="true"> Yes </option>
+    <option value="false"> No </option>
+</select>
+<br />
+
+<label asp-for="Notes">Notes: </label>
+<input asp-for="Notes"/>
+
+
 <button type="submit"> Add Movie to Collection</button>
+<div asp-validation-summary= "All"></div>
 </form>
+
+
+ <div>
+    <a asp-controller="Home" asp-action="MoviesList"> Check Out The Movies We Have Listed></a>
+
+</div>
